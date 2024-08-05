@@ -158,7 +158,7 @@ exports.resetPassword = async (req, res) => {
         if (error.response) {
             console.error('Error response data:', error.response.data);
         }
-        res.status(400).send({ error: error.message });
+        res.status(500).send({ error: error.message });
     }
 };
 
@@ -181,7 +181,7 @@ exports.updateUserProfile = async (req, res) => {
         res.status(200).send({ message: 'User profile updated successfully', user: userRecord });
     } catch (error) {
         console.error('Error updating user profile:', error);
-        res.status(400).send({ error: error.message });
+        res.status(500).send({ error: error.message });
     }
 };
 
