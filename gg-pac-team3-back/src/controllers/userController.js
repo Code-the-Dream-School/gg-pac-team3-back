@@ -6,7 +6,7 @@ const UsersModel = require('../models/UsersModel')
 
 exports.signupUser = async (req, res) => {
     // console.log(req.body)
-    const { name, email, password, isTeacher } = req.body;
+    const { name, email, password, isTeacher, teacherCode } = req.body;
 
     if (!name || !email || !password) {
         return res.status(400).json({ error: 'All fields are required' });
@@ -43,6 +43,7 @@ exports.signupUser = async (req, res) => {
         const user = new UsersModel({
             name,
             email,
+            isTeacher,
             profilePicture: 'gs://learninghub-ggpacteam3.appspot.com/images/userProfileImage.jpg' // Use your default image URL
           });
 
