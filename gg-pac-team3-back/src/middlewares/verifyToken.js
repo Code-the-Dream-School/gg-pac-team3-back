@@ -13,7 +13,7 @@ const verifyToken = async (req, res, next) => {
         next();
     } catch (error) {
         console.error('Error verifying ID token:', error);
-        res.status(401).json({ error: 'Invalid or expired token' });
+        res.status(400).json({ error: 'Invalid or expired token' });
     }
 };
 
