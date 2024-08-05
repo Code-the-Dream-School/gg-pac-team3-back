@@ -1,3 +1,6 @@
+// Import the Firebase Admin SDK from the config folder
+const admin = require('../config/firebase'); 
+
 class UsersModel {
   constructor({
     name,
