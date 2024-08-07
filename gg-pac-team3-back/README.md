@@ -29,4 +29,4 @@ Install the required packages and start the application, follow these steps:
    npm install
    npm run dev
 
-This will start the application in development mode, connecting to Firebase services and allowing you to test the backend functionality.
+This will start the application connecting to Firebase services and allow you to test the backend functionality.
