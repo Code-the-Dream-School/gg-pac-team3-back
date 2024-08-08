@@ -1,16 +1,19 @@
-require('dotenv').config();
-const admin = require('../config/firebase');
+import 'dotenv/config';
+import admin from '../config/firebase.mjs';
+import axios from 'axios';
+import CourseModel from '../models/CourseModel.mjs';
+
 const db = admin.firestore();
-const axios = require('axios');
-const CourseModel = require('../models/CourseModel'); 
+const COURSES = 'Courses';
 
 // Create a new course
-exports.createCourse = async (req, res) => {
+export const createCourse = async (req, res) => {
     const courseData = req.body;
    
     try {
         const newCourse = new CourseModel(courseData);
-        const courseRef = db.collection('Courses').doc(); // Generate a new document ID
+        
+        const courseRef = db.collection(COURSES).doc(); // Generate a new document ID
         await courseRef.set(newCourse.toFirestore());
 
         res.status(201).send({ message: 'Course created successfully', courseId: courseRef.id });
@@ -21,11 +24,11 @@ exports.createCourse = async (req, res) => {
 };
 
 // Fetch a specific course by ID
-exports.getCourse = async (req, res) => {
+export const getCourse = async (req, res) => {
     const { uid } = req.params;
 
     try {
-        const courseDoc = await db.collection('Courses').doc(uid).get();
+        const courseDoc = await db.collection(COURSES).doc(uid).get();
 
         if (!courseDoc.exists) {
             return res.status(404).send({ message: 'Course not found' });
@@ -40,9 +43,9 @@ exports.getCourse = async (req, res) => {
 };
 
 // Fetch all courses
-exports.getAllCourses = async (req, res) => {
+export const getAllCourses = async (req, res) => {
     try {
-        const coursesSnapshot = await db.collection('Courses').get();  
+        const coursesSnapshot = await db.collection(COURSES).get();  
 
         const courses = [];
         coursesSnapshot.forEach(doc => {
@@ -57,12 +60,12 @@ exports.getAllCourses = async (req, res) => {
 };
 
 // Update a course by ID
-exports.updateCourse = async (req, res) => {
+export const updateCourse = async (req, res) => {
     const { uid } = req.params;
     const updates = req.body;
 
     try {
-        const courseRef = db.collection('Courses').doc(uid);
+        const courseRef = db.collection(COURSES).doc(uid);
         const courseDoc = await courseRef.get();
 
         if (!courseDoc.exists) {
@@ -78,11 +81,11 @@ exports.updateCourse = async (req, res) => {
 };
 
 // Delete a course by ID
-exports.deleteCourse = async (req, res) => {
+export const deleteCourse = async (req, res) => {
     const { uid } = req.params;
 
     try {
-        const courseRef = db.collection('Courses').doc(uid);
+        const courseRef = db.collection(COURSES).doc(uid);
         const courseDoc = await courseRef.get();
 
         if (!courseDoc.exists) {

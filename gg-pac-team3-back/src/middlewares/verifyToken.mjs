@@ -1,6 +1,6 @@
-const admin = require('../config/firebase'); // Ensure path is correct
+import admin from '../config/firebase.mjs'; // Ensure path is correct
 
-const verifyToken = async (req, res, next) => {
+export const verifyToken = async (req, res, next) => {
     const idToken = req.headers.authorization && req.headers.authorization.split('Bearer ')[1];
     
     if (!idToken) {
@@ -16,5 +16,3 @@ const verifyToken = async (req, res, next) => {
         res.status(400).json({ error: 'Invalid or expired token' });
     }
 };
-
-module.exports = { verifyToken };

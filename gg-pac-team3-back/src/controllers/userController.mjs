@@ -1,23 +1,25 @@
-require('dotenv').config();
-const admin = require('../config/firebase');
-const db = admin.firestore();
-const axios = require('axios');
-const UsersModel = require('../models/UsersModel')
+import dotenv from 'dotenv';
+import admin from '../config/firebase.mjs'; // Ensure path is correct
+import axios from 'axios';
+import UsersModel from '../models/UsersModel.mjs'; // Ensure path is correct
 
-exports.signupUser = async (req, res) => {
-    // console.log(req.body)
-    const { name, email, password, isTeacher, teacherCode } = req.body;
+dotenv.config();
+const db = admin.firestore();
+const USERS = 'users'; 
+
+export const signupUser = async (req, res) => {
+    const { name, email, password, userType, validationcode } = req.body;
 
     if (!name || !email || !password) {
         return res.status(400).json({ error: 'All fields are required' });
     }
 
-    // Validate teacherCode if isTeacher is true
-    if (isTeacher) {
-        if (!teacherCode) {
-            return res.status(400).json({ error: 'Teacher code is required when isTeacher is true' });
+    // Validate validationcode if userType is true
+    if (userType === "Teacher") {
+        if (!validationcode) {
+            return res.status(400).json({ error: 'Teacher code is required when userType is Teacher' });
         }
-        if (teacherCode !== '1234') {
+        if (validationcode !== '1234') {
             return res.status(400).json({ error: 'Invalid teacher code' });
         }
     }
@@ -26,38 +28,20 @@ exports.signupUser = async (req, res) => {
         const userRecord = await admin.auth().createUser({
             name,
             email,
-            password
+            password,
+            userType
         });
-        // console.log('User created:', userRecord);
-
-        if (isTeacher) {
-            await admin.auth().setCustomUserClaims(userRecord.uid, { admin: true });
-            // console.log('Admin claim set for user:', userRecord.uid);
-        }
-
-        // URL of the default profile picture served by your server
-        const defaultProfilePicture = 'http://localhost:8000/images/userProfileImage.jpg';
-        const defaultProfilePicture1 = 'gs://learninghub-ggpacteam3.appspot.com/images/userProfileImage.jpg';
+       
+        const defaultprofilePictureUrl = 'gs://learninghub-ggpacteam3.appspot.com/images/userProfileImage.jpg';
         
-        // Initialize and defining user collection fields
         const user = new UsersModel({
             name,
             email,
-            isTeacher,
-            profilePicture: 'gs://learninghub-ggpacteam3.appspot.com/images/userProfileImage.jpg' // Use your default image URL
-          });
+            userType,
+            profilePictureUrl: defaultprofilePictureUrl
+        });
 
-          await db.collection('users').doc(userRecord.uid).set(user.toFirestore());
-        // await db.collection('users').doc(userRecord.uid).set({
-        //     name,
-        //     email,
-        //     isTeacher,
-        //     profilePicture: defaultProfilePicture1,
-        //     loginType: null,
-        //     teacherCode: isTeacher ? teacherCode : null, // Save teacherCode only if isTeacher is true
-        //     createdAt: admin.firestore.FieldValue.serverTimestamp()                       
-        // });
-        // console.log('User details saved in Firestore:', userRecord.uid);
+        await db.collection(USERS).doc(userRecord.uid).set(user.toFirestore());
 
         res.status(201).send({ message: 'User signed up successfully', user: userRecord });
     } catch (error) {
@@ -66,7 +50,7 @@ exports.signupUser = async (req, res) => {
     }
 };
 
-exports.loginUser = async (req, res) => {
+export const loginUser = async (req, res) => {
     const { email, password } = req.body;
 
     try {        
@@ -85,13 +69,13 @@ exports.loginUser = async (req, res) => {
     } catch (error) {
         console.error('Error logging in user:', error);
         if (error.response) {
-            console.error('Error response data:', error.response.data); // Log the error response data
+            console.error('Error response data:', error.response.data);
         }
         res.status(400).send({ error: error.message });
     }
 };
 
-exports.getUser = async (req, res) => {
+export const getUser = async (req, res) => {
     const { uid } = req.params;
 
     try {
@@ -103,9 +87,9 @@ exports.getUser = async (req, res) => {
     }
 };
 
-exports.getAllUsers = async (req, res) => {
+export const getAllUsers = async (req, res) => {
     try {
-        const usersSnapshot = await db.collection('users').get();
+        const usersSnapshot = await db.collection(USERS).get();
         if (usersSnapshot.empty) {
             return res.status(404).send({ message: 'No users found' });
         }
@@ -122,7 +106,25 @@ exports.getAllUsers = async (req, res) => {
     }
 };
 
-exports.logoffUser = async (req, res) => {
+export const getUserDashboard = async (req, res) => {
+    const { uid } = req.user; // Assuming the user ID is attached to req.user by verifyToken middleware
+
+    try {
+        const userSnapshot = await db.collection(USERS).doc(uid).get();
+        
+        if (!userSnapshot.exists) {
+            return res.status(404).send({ message: 'User not found' });
+        }
+        
+        const userData = userSnapshot.data();
+        res.status(200).send(userData);
+    } catch (error) {
+        console.error('Error fetching user dashboard:', error);
+        res.status(500).send({ error: error.message });
+    }
+};
+
+export const logoffUser = async (req, res) => {
     try {
         const { uid } = req.params;
         if (!uid) {
@@ -138,7 +140,7 @@ exports.logoffUser = async (req, res) => {
     }
 };
 
-exports.resetPassword = async (req, res) => {
+export const resetPassword = async (req, res) => {
     const { email } = req.body;
 
     if (!email) {
@@ -163,8 +165,7 @@ exports.resetPassword = async (req, res) => {
     }
 };
 
-
-exports.updateUserProfile = async (req, res) => {
+export const updateUserProfile = async (req, res) => {
     const { uid } = req.params; // User ID from URL params
     const { name, photoURL } = req.body; // New name and profile picture URL
 
@@ -185,5 +186,3 @@ exports.updateUserProfile = async (req, res) => {
         res.status(500).send({ error: error.message });
     }
 };
-
-

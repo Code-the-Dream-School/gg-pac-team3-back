@@ -2,9 +2,10 @@
   "name": "bb-practicum-team-1-back",
   "version": "1.0.0",
   "description": "Back-End Repo for Team 1 of Baboon/Bald Eagle Practicum",
-  "main": "app.js",
+  "main": "app.mjs",
+  "type": "module",
   "scripts": {
-    "dev": "nodemon src/server.js"
+    "dev": "nodemon src/server.mjs"
   },
   "author": "",
   "license": "ISC",
