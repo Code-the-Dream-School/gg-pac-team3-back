@@ -7,4 +7,4 @@ mainController.get = (req, res) => {
     });
 };
 
-module.exports = mainController;
+export default mainController;
