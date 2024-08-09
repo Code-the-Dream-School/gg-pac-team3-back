@@ -1,18 +1,35 @@
-import 'dotenv/config';
+import dotenv from 'dotenv';
 import admin from '../config/firebase.mjs';
 import axios from 'axios';
 import CourseModel from '../models/CourseModel.mjs';
 
+dotenv.config();
 const db = admin.firestore();
 const COURSES = 'Courses';
+const USERS = 'users';
 
 // Create a new course
-export const createCourse = async (req, res) => {
-    const courseData = req.body;
+export const createCourse = async (req, res) => {   
+    const courseData = req.body;    
    
     try {
-        const newCourse = new CourseModel(courseData);
-        
+         // Fetch user data
+        const userRef = db.collection(USERS).doc(req.user.uid);
+        const userDoc = await userRef.get();
+
+        if (!userDoc.exists) {
+            return res.status(404).send({ message: 'User not found' });
+        }
+        const userData = userDoc.data();
+        console.log(userData.userType)
+
+        // Check if userType is 'Teacher'
+        if (userData.userType !== 'Teacher') {
+            return res.status(403).send({ message: 'Only teachers can create courses' });
+        }
+
+        // Create a new course
+        const newCourse = new CourseModel(courseData);      
         const courseRef = db.collection(COURSES).doc(); // Generate a new document ID
         await courseRef.set(newCourse.toFirestore());
 
@@ -65,7 +82,9 @@ export const updateCourse = async (req, res) => {
     const updates = req.body;
 
     try {
-        const courseRef = db.collection(COURSES).doc(uid);
+        
+        // Access the courses subcollection within the user document
+        const courseRef = db.collection('Courses').doc(uid);      
         const courseDoc = await courseRef.get();
 
         if (!courseDoc.exists) {
@@ -85,6 +104,8 @@ export const deleteCourse = async (req, res) => {
     const { uid } = req.params;
 
     try {
+        // Access the courses subcollection within the user document
+        // const courseRef = db.collection('users').doc(req.user.uid).collection('Courses').doc(uid);      
         const courseRef = db.collection(COURSES).doc(uid);
         const courseDoc = await courseRef.get();
 

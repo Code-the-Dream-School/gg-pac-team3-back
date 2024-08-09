@@ -15,14 +15,14 @@ export const signupUser = async (req, res) => {
     }
 
     // Validate validationcode if userType is true
-    if (userType === "Teacher") {
-        if (!validationcode) {
-            return res.status(400).json({ error: 'Teacher code is required when userType is Teacher' });
-        }
-        if (validationcode !== '1234') {
-            return res.status(400).json({ error: 'Invalid teacher code' });
-        }
-    }
+    // if (userType === "Teacher") {
+    //     if (!validationcode) {
+    //         return res.status(400).json({ error: 'Teacher code is required when userType is Teacher' });
+    //     }
+    //     if (validationcode !== '1234') {
+    //         return res.status(400).json({ error: 'Invalid teacher code' });
+    //     }
+    // }
 
     try {
         const userRecord = await admin.auth().createUser({
