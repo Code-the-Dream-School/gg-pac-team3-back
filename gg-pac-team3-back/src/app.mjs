@@ -22,8 +22,9 @@ app.use(favicon(new URL('./public/favicon.ico', import.meta.url).pathname));
 // Routes
 app.use('/', mainRouter);
 app.use('/api/users', userRoutes);
-app.use('/api/course', courseRoutes);
-app.use('/api/course', lessonRoutes);
-app.use('/api/course', quizRoutes);
-app.use('/api/user-course', userCourseRoutes);
+app.use('/api/courses', courseRoutes);  // Pluralized path
+app.use('/api/courses', lessonRoutes);  // Pluralized path
+app.use('/api/courses', quizRoutes);  // Pluralized path
+app.use('/api', userCourseRoutes);  // Integrated path
+
 export default app;

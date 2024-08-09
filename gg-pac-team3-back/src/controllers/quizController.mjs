@@ -4,26 +4,29 @@ import QuizModel from '../models/QuizModel.mjs';
 const db = admin.firestore();
 const QUIZZES = 'Quizzes';
 const COURSES = 'Courses';
-// const USERS = 'users';
 const LESSONS = 'lessons';
+
 // Create a new quiz for a lesson
 export const createQuiz = async (req, res) => {
     const { lessonId, courseId } = req.params;
     const quizData = req.body;
-// console.log(req.user.uid)
-// console.log(req.params)
 
     try {
-        const newQuiz = new QuizModel(quizData);
-
-        const lessonRef = db.collection(COURSES).doc(courseId).collection(LESSONS).doc(lessonId); // Adjust as needed
+        const lessonRef = db.collection(COURSES).doc(courseId).collection(LESSONS).doc(lessonId);
         const quizRef = lessonRef.collection(QUIZZES).doc(); // Generate a new document ID
+        const quizId = quizRef.id; // Get the generated ID
+
+        const newQuiz = new QuizModel({
+            ...quizData,
+            quizId // Set the generated ID here
+        });
+
         await quizRef.set(newQuiz.toFirestore());
 
-        res.status(201).send({ message: 'Quiz created successfully', quizId: quizRef.id });
+        res.status(201).send({ message: 'Quiz created successfully', quizId });
     } catch (error) {
         console.error('Error creating quiz:', error);
-        res.status(500).send({ error: error.message });
+        res.status(500).send({ error: 'Failed to create quiz' });
     }
 };
 
@@ -42,7 +45,7 @@ export const getQuiz = async (req, res) => {
         res.status(200).send(quizData);
     } catch (error) {
         console.error('Error fetching quiz:', error);
-        res.status(500).send({ error: error.message });
+        res.status(500).send({ error: 'Failed to fetch quiz' });
     }
 };
 
@@ -65,7 +68,7 @@ export const getAllQuizzesForLesson = async (req, res) => {
         res.status(200).send(quizzes);
     } catch (error) {
         console.error('Error fetching quizzes:', error);
-        res.status(500).send({ error: error.message });
+        res.status(500).send({ error: 'Failed to fetch quizzes' });
     }
 };
 
@@ -86,7 +89,7 @@ export const updateQuiz = async (req, res) => {
         res.status(200).send({ message: 'Quiz updated successfully' });
     } catch (error) {
         console.error('Error updating quiz:', error);
-        res.status(500).send({ error: error.message });
+        res.status(500).send({ error: 'Failed to update quiz' });
     }
 };
 
@@ -106,6 +109,6 @@ export const deleteQuiz = async (req, res) => {
         res.status(200).send({ message: 'Quiz deleted successfully' });
     } catch (error) {
         console.error('Error deleting quiz:', error);
-        res.status(500).send({ error: error.message });
+        res.status(500).send({ error: 'Failed to delete quiz' });
     }
 };

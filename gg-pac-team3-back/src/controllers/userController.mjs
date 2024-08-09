@@ -126,7 +126,7 @@ export const getUserDashboard = async (req, res) => {
 
 export const logoffUser = async (req, res) => {
     try {
-        const { uid } = req.params;
+        const { uid } = req.user; 
         if (!uid) {
             return res.status(400).send({ error: 'User ID is required' });
         }

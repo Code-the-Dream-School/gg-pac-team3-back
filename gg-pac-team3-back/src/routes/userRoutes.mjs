@@ -1,5 +1,3 @@
-
-
 import express from 'express';
 import { getUser, signupUser, getUserDashboard, loginUser, logoffUser, getAllUsers, resetPassword, updateUserProfile } from '../controllers/userController.mjs';
 import { verifyToken } from '../middlewares/verifyToken.mjs';
@@ -15,19 +13,19 @@ router.get('/:uid', verifyToken, getUser);
 // Route for user dashboard
 router.get('/dashboard', verifyToken, getUserDashboard);
 
-// Route for user signup
-router.post('/signup', signupUser);
+// Route for user signup (Creating a new user)
+router.post('/', signupUser);
 
 // Route for user login
 router.post('/login', loginUser);
 
 // Route for user logoff
-router.post('/logoff/:uid', verifyToken, logoffUser);
+router.delete('/login', verifyToken, logoffUser);
 
 // Route for resetting password
 router.post('/resetpassword', resetPassword);
 
 // Route for updating user profile
-router.patch('/update-profile/:uid', verifyToken, updateUserProfile);
+router.patch('/:uid', verifyToken, updateUserProfile);
 
 export default router;
