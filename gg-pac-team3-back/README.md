@@ -16,7 +16,8 @@ Learning Hub is an educational platform designed to support students and teacher
 
 To run this application, you must have a `.env` file with the necessary private keys and a Firebase Admin SDK file in the backend folder.
 
-To obtain the `.env` file with the necessary environment variables and Firebase Admin SDK, please send a message to Edith on Slack.
+To obtain the `.env` file with the necessary environment variables and Firebase Admin SDK file: learninghub-ggpacteam3-firebase-adminsdk-zexw0-e7cfeb2116.json, 
+please send a message to Edith on Slack.
 
 ## Running the Application
 
