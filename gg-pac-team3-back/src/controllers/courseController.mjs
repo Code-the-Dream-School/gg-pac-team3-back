@@ -104,8 +104,6 @@ export const deleteCourse = async (req, res) => {
     const { uid } = req.params;
 
     try {
-        // Access the courses subcollection within the user document
-        // const courseRef = db.collection('users').doc(req.user.uid).collection('Courses').doc(uid);      
         const courseRef = db.collection(COURSES).doc(uid);
         const courseDoc = await courseRef.get();
 

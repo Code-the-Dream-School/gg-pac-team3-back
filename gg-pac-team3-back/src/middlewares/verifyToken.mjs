@@ -1,4 +1,4 @@
-import admin from '../config/firebase.mjs'; // Ensure path is correct
+import admin from '../config/firebase.mjs'; 
 
 export const verifyToken = async (req, res, next) => {
     const idToken = req.headers.authorization && req.headers.authorization.split('Bearer ')[1];

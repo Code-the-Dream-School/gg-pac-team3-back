@@ -8,21 +8,11 @@ const db = admin.firestore();
 const USERS = 'users'; 
 
 export const signupUser = async (req, res) => {
-    const { name, email, password, userType, validationcode } = req.body;
+    const { name, email, password, userType } = req.body;
 
     if (!name || !email || !password) {
         return res.status(400).json({ error: 'All fields are required' });
     }
-
-    // Validate validationcode if userType is true
-    // if (userType === "Teacher") {
-    //     if (!validationcode) {
-    //         return res.status(400).json({ error: 'Teacher code is required when userType is Teacher' });
-    //     }
-    //     if (validationcode !== '1234') {
-    //         return res.status(400).json({ error: 'Invalid teacher code' });
-    //     }
-    // }
 
     try {
         const userRecord = await admin.auth().createUser({

@@ -1,5 +1,5 @@
-import admin from '../config/firebase.mjs'; // Ensure path is correct
-import LessonModel from '../models/LessonModel.mjs'; // Ensure path is correct
+import admin from '../config/firebase.mjs'; 
+import LessonModel from '../models/LessonModel.mjs'; 
 
 const db = admin.firestore();
 const COURSES = 'Courses';

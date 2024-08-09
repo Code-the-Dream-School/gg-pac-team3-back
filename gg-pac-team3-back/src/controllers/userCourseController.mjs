@@ -1,5 +1,3 @@
-// controllers/userCourseController.mjs
-
 import admin from '../config/firebase.mjs';
 import UserCourseModel from '../models/userCourseModel.mjs';
 
@@ -8,7 +6,6 @@ const db = admin.firestore();
 export const enrollInCourse = async (req, res) => {
     const userId = req.user.uid; // Assuming you attach user ID to req.user in authentication middleware
   const { courseId } = req.body;
-//   const { userId, courseId } = req.body;
 
   try {
     const userCourse = new UserCourseModel({
